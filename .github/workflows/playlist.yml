@@ -1,0 +1,29 @@
+name: Daily Playlist Generator
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # Täglich um 06:00 UTC (08:00 deutsche Zeit)
+  workflow_dispatch:       # Optional: Manuell starten
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository klonen
+        uses: actions/checkout@v3
+
+      - name: Python einrichten
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Abhängigkeiten installieren
+        run: pip install spotipy
+
+      - name: Playlist-Skript ausführen
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+        run: python generate_playlist.py
