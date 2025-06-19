@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: Abhängigkeiten installieren
-        run: pip install spotipy
+        run: pip install spotipy python-dotenv
 
       - name: Playlist-Skript ausführen
         env:
