@@ -1,0 +1,113 @@
+# 🎧 Daily Playlist Generator for Spotify
+
+Dieses Projekt erstellt **automatisch jeden Tag eine personalisierte Spotify-Playlist** basierend auf deinem Hörverhalten. Die Playlist kombiniert Songs vom **Vortag**, gelikte Songs aus den **letzten 6 Monaten** und personalisierte Empfehlungen auf Basis deiner Spotify-Daten.
+
+📦 Vollständig automatisiert über **GitHub Actions** – wartungsfrei, kostenlos und jederzeit anpassbar.
+
+---
+
+## 🚀 Features
+
+- 🎶 Nutzt Songs, die du am Vortag gehört hast
+- ❤️ Berücksichtigt gelikte Songs der letzten 6 Monate
+- 🧠 Ergänzt passende Empfehlungen von Spotify
+- 🗓 Erstellt täglich eine Playlist wie `Daily Flow – YYYY-MM-DD`
+- ⚙️ Anpassbar nach Stimmung, Genre, Tempo oder Künstler
+
+---
+
+## 🧰 Voraussetzungen
+
+### 1. Spotify Developer App
+
+1. Gehe zu [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Erstelle eine neue App mit:
+   - **App Name**: z. B. `Daily Playlist Generator`
+   - **Redirect URI**: `http://127.0.0.1:8888/callback`
+3. Notiere:
+   - Deine **Client ID**
+   - Dein **Client Secret**
+4. Füge unter "Edit Settings" genau diese Redirect URI ein:
+   ```
+   http://127.0.0.1:8888/callback
+   ```
+
+---
+
+## 🔑 Refresh Token generieren
+
+Nutze dieses lokale Skript einmalig, um dein `refresh_token` zu erhalten:
+
+```python
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+
+sp_oauth = SpotifyOAuth(
+    client_id="DEINE_CLIENT_ID",
+    client_secret="DEIN_CLIENT_SECRET",
+    redirect_uri="http://127.0.0.1:8888/callback",
+    scope="user-library-read user-read-recently-played playlist-modify-private playlist-modify-public"
+)
+
+token_info = sp_oauth.get_access_token(as_dict=True)
+print("Refresh Token:", token_info['refresh_token'])
+```
+
+> 💡 Ersetze `DEINE_CLIENT_ID` und `DEIN_CLIENT_SECRET`, führe das Skript lokal aus und kopiere den `refresh_token`.
+
+---
+
+## ⚙️ GitHub Actions Setup
+
+### 1. Repository forken
+
+➡ [Dieses Repository forken](https://github.com/SpeedySwifter/Daily-Playlist-Generator-for-Spotify)
+
+### 2. Repository-Secrets anlegen
+
+Unter `Settings > Secrets and variables > Actions > New repository secret`:
+
+| Name                   | Beschreibung                    |
+|------------------------|---------------------------------|
+| `SPOTIFY_CLIENT_ID`    | Deine Spotify Client ID         |
+| `SPOTIFY_CLIENT_SECRET`| Dein Spotify Client Secret      |
+| `SPOTIFY_REFRESH_TOKEN`| Dein generiertes Refresh Token  |
+
+---
+
+### 3. Automatischer Ablauf
+
+- Die Datei `.github/workflows/playlist.yml` enthält die Planung (täglich 06:00 UTC)
+- Playlist wird automatisch generiert und deinem Spotify-Konto hinzugefügt
+
+---
+
+## 🎨 Anpassen
+
+Du kannst das Skript `generate_playlist.py` selbst erweitern:
+
+- **Zeitfenster** ändern (z. B. Songs der letzten 2 Tage statt nur gestern)
+- **Gewichtung** anpassen (z. B. 70% Empfehlungen, 30% Archiv)
+- **Genres oder Künstler bevorzugen**
+- **Playlist-Name, Sichtbarkeit** (privat/öffentlich) ändern
+
+---
+
+## 🧪 Lokal testen
+
+```bash
+pip install spotipy
+python generate_playlist.py
+```
+
+---
+
+## 💬 Feedback oder Fragen?
+
+Erstelle gerne ein [Issue](https://github.com/SpeedySwifter/Daily-Playlist-Generator-for-Spotify/issues) oder sende einen Pull Request.
+
+---
+
+## 📄 Lizenz
+
+[MIT License](LICENSE)
